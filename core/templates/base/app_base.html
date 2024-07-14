@@ -11,16 +11,16 @@
     <div class="flex flex-1 justify-end px-2">
       <div class="flex items-stretch">
         <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="py-2 px-3 rounded-btn flex nowrap hover:bg-base-200 ">
+          <div tabindex="0" role="button" class="py-2 px-3 rounded-btn items-center flex nowrap hover:bg-base-200 ">
             {% if user.profile_picture %}
             <div class="avata mr-2">
-              <div class="w-6 rounded-full overflow-hidden">
+              <div class="w-9 rounded-full overflow-hidden">
                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
               </div>
             </div>
             {% else %}
             <div class="avatar placeholder  mr-2">
-              <div class="bg-neutral text-neutral-content w-6 rounded-full">
+              <div class="bg-neutral text-neutral-content w-9  rounded-full">
                 <span class="text-base">U</span>
               </div>
             </div>
@@ -41,5 +41,8 @@
       </div>
     </div>
   </div>
-  {% block content %} {% endblock %} {% endblock %}
+  <main class="px-5">
+
+    {% block content %} {% endblock %} {% endblock %}
+  </main>
 </div>
