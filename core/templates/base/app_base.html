@@ -1,0 +1,45 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+
+{% block base_content %}
+<div class="flex flex-col h-screen">
+  <div class="flex  border-b py-2 px-5 rounded-box items-center justify-center">
+    <div class="flex-1 px-2 lg:flex-none">
+      <img src="{% static 'logo.png' %}" alt="MediaCloud Logo" class="h-6 w-auto">
+    </div>
+    <div class="flex flex-1 justify-end px-2">
+      <div class="flex items-stretch">
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="py-2 px-3 rounded-btn flex nowrap hover:bg-base-200 ">
+            {% if user.profile_picture %}
+            <div class="avata mr-2">
+              <div class="w-6 rounded-full overflow-hidden">
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
+              </div>
+            </div>
+            {% else %}
+            <div class="avatar placeholder  mr-2">
+              <div class="bg-neutral text-neutral-content w-6 rounded-full">
+                <span class="text-base">U</span>
+              </div>
+            </div>
+            {% endif %}
+            {{ user.username }}
+          </div>
+          <ul class="menu dropdown-content rounded-box border z-[1] bg-white mt-4 w-52 p-2 shadow">
+            <li><a href="{% url 'edit_profile' %}">Editar</a></li>
+            <li class="w-full">
+              <form method="post" class="w-full flex " action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="w-full text-left">Sair</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% block content %} {% endblock %} {% endblock %}
+</div>

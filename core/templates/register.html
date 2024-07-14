@@ -1,0 +1,90 @@
+<!-- mediacloud/templates/mediacloud/signup.html -->
+{% extends "base/auth_base.html" %}
+
+{% block title %}Cadastre-se{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-md flex flex-col">
+  <h2 class="text-3xl font-bold">Cadastre-se</h2>
+  <form method="post" class="space-y-4" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div role="alert" class="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ form.non_field_errors }}</span>
+    </div>
+    {% endif %}
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Foto de Perfil</span>
+      </div>
+      <input type="file" name="profile_picture" class="file-input input-bordered w-full">
+      {% if form.profile_picture.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ form.profile_picture.errors }}</div>
+      {% endif %}
+    </label>
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Nome</span>
+      </div>
+      <input type="text" name="name" class="input input-bordered w-full"
+        value="{{ form.name.value|default_if_none:'' }}">
+      {% for error in form.name.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Usuário</span>
+      </div>
+      <input type="text" name="username" class="input input-bordered w-full"
+        value="{{ form.username.value|default_if_none:'' }}">
+      {% for error in form.username.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Email</span>
+      </div>
+      <input type="email" name="email" class="input input-bordered w-full"
+        value="{{ form.email.value|default_if_none:'' }}">
+      {% for error in form.email.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Senha</span>
+      </div>
+      <input type="password" name="password1" class="input input-bordered w-full">
+      {% for error in form.password1.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Confirmar Senha</span>
+      </div>
+      <input type="password" name="password2" class="input input-bordered w-full">
+      {% for error in form.password2.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+    <button type="submit" class="btn btn-primary !mt-6 w-full">Cadastrar</button>
+  </form>
+  <span class="divider"></span>
+  <a href="/login" class="btn btn-ghost">Entrar</a>
+</div>
+
+{% endblock %}
