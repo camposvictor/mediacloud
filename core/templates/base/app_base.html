@@ -79,7 +79,7 @@
     </nav>
   </aside>
   <div class="flex flex-col flex-1 h-[100svh] px-6">
-    <header class="flex h-[60px] py-2 mb-6 rounded-box items-center justify-center">
+    <header class="flex py-2 mb-6 rounded-box items-center justify-center">
       <div class="flex-none lg:hidden">
         <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -88,7 +88,7 @@
           </svg>
         </label>
       </div>
-      <h2 class="text-xl font-semibold ">Bem vindo, {{user.name}}</h2>
+      <h2 class="text-2xl font-semibold ">{% block heading %} {% endblock %}</h2>
       <div class="flex flex-1 justify-end px-2">
         <div class="flex items-stretch">
           <div class="dropdown dropdown-end">
