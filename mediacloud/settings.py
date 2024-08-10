@@ -31,8 +31,7 @@ DEBUG = True
 
 # settings.py
 
-ALLOWED_HOSTS = ['54.207.225.224', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ['18.229.163.202', 'localhost', '127.0.0.1']
 
 
 # Application definition
