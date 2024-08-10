@@ -21,8 +21,7 @@
   <div class="modal-box" hx-ext="response-targets">
     <h3 class="text-lg font-bold mb-4">Carregar Imagem</h3>
     <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert-image' hx-swap='outerHTML'
-      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form_image"
-      hx-indicator="#upload-loading-image">
+      hx-trigger="submit" hx-post="{% url 'images' %}" id="upload_form_image" hx-indicator="#upload-loading-image">
       <span id="upload-form-alert-image"></span>
       <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
         <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
@@ -39,11 +38,24 @@
         </div>
         <input type="file" name="file" class="drop-zone__input hidden">
       </div>
+      <div class="flex justify-between text-gray-600 text-sm mt-1 mb-4">
+        <p>Suporta imagens</p>
+        <p>Tamanho máximo: 10MB</p>
+      </div>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Descrição</span>
+        </div>
+        <textarea type="text" name="description" class="textarea textarea-bordered w-full"></textarea>
+      </label>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Tags</span>
+        </div>
+        <input type="text" name="tags" class="input input-bordered w-full"
+          placeholder="Adicione as tags separadas por vírgula">
+      </label>
     </form>
-    <div class="flex justify-between text-gray-600 text-sm mt-1">
-      <p>Suporta imagens</p>
-      <p>Tamanho máximo: 10MB</p>
-    </div>
     <div class="modal-action">
       <form method="dialog" id="modal_form_image">
         <button class="btn" form="modal_form_image">Fechar</button>
@@ -61,8 +73,7 @@
   <div class="modal-box" hx-ext="response-targets">
     <h3 class="text-lg font-bold mb-4">Carregar Vídeo</h3>
     <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert-video' hx-swap='outerHTML'
-      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form_video"
-      hx-indicator="#upload-loading-video">
+      hx-trigger="submit" hx-post="{% url 'videos' %}" id="upload_form_video" hx-indicator="#upload-loading-video">
       <span id="upload-form-alert-video"></span>
       <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
         <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
@@ -79,11 +90,30 @@
         </div>
         <input type="file" name="file" class="drop-zone__input hidden">
       </div>
+      <div class="flex justify-between text-gray-600 text-sm mt-1 mb-4">
+        <p>Suporta imagens</p>
+        <p>Tamanho máximo: 10MB</p>
+      </div>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Descrição</span>
+        </div>
+        <textarea type="text" name="description" class="textarea textarea-bordered w-full"></textarea>
+      </label>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Tags</span>
+        </div>
+        <input type="text" name="tags" class="input input-bordered w-full"
+          placeholder="Adicione as tags separadas por vírgula">
+      </label>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Gênero</span>
+        </div>
+        <input type="text" name="genre" class="input input-bordered w-full">
+      </label>
     </form>
-    <div class="flex justify-between text-gray-600 text-sm mt-1">
-      <p>Suporta vídeos</p>
-      <p>Tamanho máximo: 10MB</p>
-    </div>
     <div class="modal-action">
       <form method="dialog" id="modal_form_video">
         <button class="btn" form="modal_form_video">Fechar</button>
@@ -101,8 +131,7 @@
   <div class="modal-box" hx-ext="response-targets">
     <h3 class="text-lg font-bold mb-4">Carregar Áudio</h3>
     <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert-audio' hx-swap='outerHTML'
-      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form_audio"
-      hx-indicator="#upload-loading-audio">
+      hx-trigger="submit" hx-post="{% url 'audios' %}" id="upload_form_audio" hx-indicator="#upload-loading-audio">
       <span id="upload-form-alert-audio"></span>
       <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
         <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
@@ -119,11 +148,30 @@
         </div>
         <input type="file" name="file" class="drop-zone__input hidden">
       </div>
+      <div class="flex justify-between text-gray-600 text-sm mt-1 mb-4">
+        <p>Suporta imagens</p>
+        <p>Tamanho máximo: 10MB</p>
+      </div>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Descrição</span>
+        </div>
+        <textarea type="text" name="description" class="textarea textarea-bordered w-full"></textarea>
+      </label>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Tags</span>
+        </div>
+        <input type="text" name="tags" class="input input-bordered w-full"
+          placeholder="Adicione as tags separadas por vírgula">
+      </label>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Gênero</span>
+        </div>
+        <input type="text" name="genre" class="input input-bordered w-full">
+      </label>
     </form>
-    <div class="flex justify-between text-gray-600 text-sm mt-1">
-      <p>Suporta áudios</p>
-      <p>Tamanho máximo: 10MB</p>
-    </div>
     <div class="modal-action">
       <form method="dialog" id="modal_form_audio">
         <button class="btn" form="modal_form_audio">Fechar</button>

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeDropZones() {
   document.querySelectorAll(".drop-zone__input").forEach(fileInput => {
     const dropZone = fileInput.closest(".drop-zone");
-    const uploadButton = document.querySelector(".btn-upload");
+    const uploadButton = dropZone.closest('.modal-box').querySelector(".btn-upload");
 
     setUpEventListeners(fileInput, dropZone, uploadButton);
   });
