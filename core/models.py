@@ -1,6 +1,6 @@
-# mediacloud/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     name = models.CharField(max_length=100)
@@ -19,3 +19,19 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class MediaFile(models.Model):
+    MEDIA_TYPE_CHOICES = [
+        ('image', 'Image'),
+        ('audio', 'Audio'),
+        ('video', 'Video'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='media_files/')
+    media_type = models.CharField(max_length=5, choices=MEDIA_TYPE_CHOICES)
+    description = models.TextField(blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.file.name}"

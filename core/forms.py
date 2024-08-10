@@ -1,7 +1,8 @@
-# No seu forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from core.models import CustomUser
+from .models import MediaFile
+
 
 
 class SignUpForm(UserCreationForm):
@@ -22,4 +23,9 @@ class EditProfileForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ('username', 'name', 'profile_picture')
+
+class MediaFileForm(forms.ModelForm):
+    class Meta:
+        model = MediaFile
+        fields = ['file', 'media_type', 'description']
 

@@ -1,11 +1,11 @@
-from django.shortcuts import render
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from .forms import SignUpForm, EditProfileForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .forms import MediaFileForm
+from .models import MediaFile
 
 @login_required
 def dashboard(request):
@@ -49,3 +49,51 @@ def edit_profile_view(request):
     
     return render(request, 'edit_profile.html', {'form': form})
 
+@login_required
+def upload_media_view(request):
+    if request.method == 'POST':
+        form = MediaFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            media_file = form.save(commit=False)
+            media_file.user = request.user
+            media_file.save()
+            messages.success(request, 'Arquivo enviado com sucesso!')
+            return redirect('dashboard')
+    else:
+        form = MediaFileForm()
+    return render(request, 'upload_media.html', {'form': form})
+
+@login_required
+def edit_media_view(request, pk):
+    media_file = get_object_or_404(MediaFile, pk=pk)
+    if request.user != media_file.user:
+        messages.error(request, 'Você não tem permissão para editar este arquivo.')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = MediaFileForm(request.POST, request.FILES, instance=media_file)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Arquivo atualizado com sucesso!')
+            return redirect('dashboard')
+    else:
+        form = MediaFileForm(instance=media_file)
+    return render(request, 'edit_media.html', {'form': form})
+
+@login_required
+def delete_media_view(request, pk):
+    media_file = get_object_or_404(MediaFile, pk=pk)
+    if request.user == media_file.user:
+        media_file.delete()
+        messages.success(request, 'Arquivo excluído com sucesso!')
+    else:
+        messages.error(request, 'Você não tem permissão para excluir este arquivo.')
+    return redirect('dashboard')
+
+@login_required
+def view_media_view(request, pk):
+    media_file = get_object_or_404(MediaFile, pk=pk)
+    if request.user != media_file.user:
+        messages.error(request, 'Você não tem permissão para visualizar este arquivo.')
+        return redirect('dashboard')
+    return render(request, 'view_media.html', {'media_file': media_file})

@@ -8,5 +8,8 @@ urlpatterns = [
     path('edit-profile/', views.edit_profile_view, name='edit_profile'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/login'), name='logout'),
     path('', views.dashboard, name='dashboard'),
+    path('upload/', views.upload_media_view, name='upload_media'),
+    path('media/<int:pk>/', views.view_media_view, name='view_media'),
+    path('media/<int:pk>/edit/', views.edit_media_view, name='edit_media'),
+    path('media/<int:pk>/delete/', views.delete_media_view, name='delete_media'),
 ]
-
