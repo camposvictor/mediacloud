@@ -97,3 +97,30 @@ def view_media_view(request, pk):
         messages.error(request, 'Você não tem permissão para visualizar este arquivo.')
         return redirect('dashboard')
     return render(request, 'view_media.html', {'media_file': media_file})
+
+@login_required
+def search_media_view(request):
+    query = request.GET.get('q')
+    media_type = request.GET.get('type')
+    if query:
+        media_files = MediaFile.objects.filter(
+            Q(description__icontains=query) |
+            Q(file__icontains=query) |
+            Q(tags__icontains=query)
+        )
+        if media_type:
+            media_files = media_files.filter(media_type=media_type)
+    else:
+        media_files = MediaFile.objects.all()
+        if media_type:
+            media_files = media_files.filter(media_type=media_type)
+
+    return render(request, 'search_results.html', {'media_files': media_files})
+
+@login_required
+def list_media_view(request):
+    media_files = MediaFile.objects.all()
+    media_type = request.GET.get('type')
+    if media_type:
+        media_files = media_files.filter(media_type=media_type)
+    return render(request, 'list_media.html', {'media_files': media_files})

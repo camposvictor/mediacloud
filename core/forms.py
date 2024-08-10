@@ -25,7 +25,9 @@ class EditProfileForm(UserChangeForm):
         fields = ('username', 'name', 'profile_picture')
 
 class MediaFileForm(forms.ModelForm):
+    tags = forms.CharField(required=False, help_text='Optional. Add tags separated by commas.')
+
     class Meta:
         model = MediaFile
-        fields = ['file', 'media_type', 'description']
+        fields = ['file', 'media_type', 'description', 'tags']
 
