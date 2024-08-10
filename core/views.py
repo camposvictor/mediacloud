@@ -4,7 +4,6 @@ from .forms import SignUpForm, EditProfileForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import MediaFileForm
 from .models import MediaFile
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
@@ -100,22 +99,22 @@ def upload_media_view(request):
     return HttpResponse("<span id='upload-form-alert' class='alert alert-error my-2'>Ocorreu um erro inesperado.", status=400)
 
 
-@login_required
-def edit_media_view(request, pk):
-    media_file = get_object_or_404(MediaFile, pk=pk)
-    if request.user != media_file.user:
-        messages.error(request, 'Você não tem permissão para editar este arquivo.')
-        return redirect('dashboard')
+# @login_required
+# def edit_media_view(request, pk):
+#     media_file = get_object_or_404(MediaFile, pk=pk)
+#     if request.user != media_file.user:
+#         messages.error(request, 'Você não tem permissão para editar este arquivo.')
+#         return redirect('dashboard')
 
-    if request.method == 'POST':
-        form = MediaFileForm(request.POST, request.FILES, instance=media_file)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Arquivo atualizado com sucesso!')
-            return redirect('dashboard')
-    else:
-        form = MediaFileForm(instance=media_file)
-    return render(request, 'edit_media.html', {'form': form})
+#     if request.method == 'POST':
+#         form = MediaFileForm(request.POST, request.FILES, instance=media_file)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Arquivo atualizado com sucesso!')
+#             return redirect('dashboard')
+#     else:
+#         form = MediaFileForm(instance=media_file)
+#     return render(request, 'edit_media.html', {'form': form})
 
 @login_required
 def delete_media_view(request, pk):
