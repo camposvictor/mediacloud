@@ -25,7 +25,9 @@ def videos(request):
 
 @login_required
 def images(request):
-    return render(request, 'images.html')
+   images = MediaFile.objects.filter(media_type='image')
+   print(images)
+   return render(request, 'images.html', {'images': images})
 
 @login_required
 def audios(request):
@@ -63,10 +65,10 @@ def edit_profile_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Perfil atualizado com sucesso!')
-            return redirect('dashboard') 
+            return redirect('dashboard')
     else:
         form = EditProfileForm(instance=request.user)
-    
+
     return render(request, 'auth/edit_profile.html', {'form': form})
 
 def upload_media_view(request):
@@ -159,3 +161,5 @@ def list_media_view(request):
     if media_type:
         media_files = media_files.filter(media_type=media_type)
     return render(request, 'list_media.html', {'media_files': media_files})
+
+

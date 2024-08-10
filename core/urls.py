@@ -17,4 +17,5 @@ urlpatterns = [
     path('media/<int:pk>/delete/', views.delete_media_view, name='delete_media'),
     path('search/', views.search_media_view, name='search_media'),
     path('list/', views.list_media_view, name='list_media'),
+
 ]
