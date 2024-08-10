@@ -1,21 +1,29 @@
 {% load static %}
 
-<button class="btn btn-primary mt-6 w-full" onclick="openModal()">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload">
-    <path d="M12 13v8" />
-    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
-    <path d="m8 17 4-4 4 4" />
-  </svg>
-  Carregar arquivo
-</button>
+<!-- Dropdown para selecionar o tipo de arquivo -->
+<div class="dropdown w-full dropdown-end">
+  <button class="btn btn-primary mt-6 w-full">
+    Carregar arquivo
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  </button>
+  <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+    <li onclick="openModal('image')"> <a href="javascript:void(0);">Imagem</a></li>
+    <li onclick="openModal('video')"><a href="javascript:void(0);">Vídeo</a></li>
+    <li onclick="openModal('audio')"><a href="javascript:void(0);">Áudio</a></li>
+  </ul>
+</div>
 
-<dialog id="my_modal_1" class="modal">
+<!-- Diálogo para Imagem -->
+<dialog id="modal_image" class="modal hidden">
   <div class="modal-box" hx-ext="response-targets">
-    <h3 class="text-lg font-bold mb-4">Carregar Arquivo</h3>
-    <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert' hx-swap='outerHTML'
-      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form" hx-indicator="#upload-loading">
-      <span id="upload-form-alert"></span>
+    <h3 class="text-lg font-bold mb-4">Carregar Imagem</h3>
+    <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert-image' hx-swap='outerHTML'
+      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form_image"
+      hx-indicator="#upload-loading-image">
+      <span id="upload-form-alert-image"></span>
       <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
         <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
@@ -33,15 +41,95 @@
       </div>
     </form>
     <div class="flex justify-between text-gray-600 text-sm mt-1">
-      <p>Suporta aúdios, videos, imagens</p>
+      <p>Suporta imagens</p>
       <p>Tamanho máximo: 10MB</p>
     </div>
     <div class="modal-action">
-      <form method="dialog" id="modal_form">
-        <button class="btn" form="modal_form">Fechar</button>
+      <form method="dialog" id="modal_form_image">
+        <button class="btn" form="modal_form_image">Fechar</button>
       </form>
-      <button type="submit" class="btn btn-primary btn-upload" form="upload_form" disabled>
-        <span class="loading loading-sm loading-spinner hidden [&.htmx-request]:block" id="upload-loading"></span>
+      <button type="submit" class="btn btn-primary btn-upload" form="upload_form_image" disabled>
+        <span class="loading loading-sm loading-spinner hidden [&.htmx-request]:block" id="upload-loading-image"></span>
+        Carregar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Diálogo para Vídeo -->
+<dialog id="modal_video" class="modal hidden">
+  <div class="modal-box" hx-ext="response-targets">
+    <h3 class="text-lg font-bold mb-4">Carregar Vídeo</h3>
+    <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert-video' hx-swap='outerHTML'
+      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form_video"
+      hx-indicator="#upload-loading-video">
+      <span id="upload-form-alert-video"></span>
+      <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
+        <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-cloud-upload">
+            <path d="M12 13v8" />
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+            <path d="m8 17 4-4 4 4" />
+          </svg>
+          <span class="text-center">
+            Solte o arquivo aqui ou <button type="button" class="btn btn-link px-1">Escolher arquivo</button>
+          </span>
+        </div>
+        <input type="file" name="file" class="drop-zone__input hidden">
+      </div>
+    </form>
+    <div class="flex justify-between text-gray-600 text-sm mt-1">
+      <p>Suporta vídeos</p>
+      <p>Tamanho máximo: 10MB</p>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" id="modal_form_video">
+        <button class="btn" form="modal_form_video">Fechar</button>
+      </form>
+      <button type="submit" class="btn btn-primary btn-upload" form="upload_form_video" disabled>
+        <span class="loading loading-sm loading-spinner hidden [&.htmx-request]:block" id="upload-loading-video"></span>
+        Carregar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Diálogo para Áudio -->
+<dialog id="modal_audio" class="modal hidden">
+  <div class="modal-box" hx-ext="response-targets">
+    <h3 class="text-lg font-bold mb-4">Carregar Áudio</h3>
+    <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert-audio' hx-swap='outerHTML'
+      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form_audio"
+      hx-indicator="#upload-loading-audio">
+      <span id="upload-form-alert-audio"></span>
+      <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
+        <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-cloud-upload">
+            <path d="M12 13v8" />
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+            <path d="m8 17 4-4 4 4" />
+          </svg>
+          <span class="text-center">
+            Solte o arquivo aqui ou <button type="button" class="btn btn-link px-1">Escolher arquivo</button>
+          </span>
+        </div>
+        <input type="file" name="file" class="drop-zone__input hidden">
+      </div>
+    </form>
+    <div class="flex justify-between text-gray-600 text-sm mt-1">
+      <p>Suporta áudios</p>
+      <p>Tamanho máximo: 10MB</p>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" id="modal_form_audio">
+        <button class="btn" form="modal_form_audio">Fechar</button>
+      </form>
+      <button type="submit" class="btn btn-primary btn-upload" form="upload_form_audio" disabled>
+        <span class="loading loading-sm loading-spinner hidden [&.htmx-request]:block" id="upload-loading-audio"></span>
         Carregar
       </button>
     </div>

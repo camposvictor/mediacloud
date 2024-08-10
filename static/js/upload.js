@@ -98,6 +98,22 @@ function disableUploadButton(button) {
   button.disabled = true;
 }
 
-function openModal() {
-  document.getElementById("my_modal_1").showModal();
+function openModal(type) {
+  const modals = {
+    'image': '#modal_image',
+    'video': '#modal_video',
+    'audio': '#modal_audio'
+  };
+
+  // Fechar todos os diálogos
+  Object.values(modals).forEach(selector => document.querySelector(selector).classList.add('hidden'));
+
+  // Mostrar o diálogo correspondente
+  const modal = document.querySelector(modals[type]);
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.showModal();
+  }
 }
+
+// Fechar todos os diálogos ao clicar fora
