@@ -1,0 +1,15 @@
+{% extends "base/app_base.html" %}
+
+{% block title %}Videos{% endblock %}
+
+{% block content %}
+
+
+<div class="flex-1">
+  <h1 class="text-2xl font-bold">Videos</h1>
+  {% for media in media_list %}
+  <li>{{media.media_type}}</li>
+  {% endfor %}
+</div>
+</div>
+{% endblock %}

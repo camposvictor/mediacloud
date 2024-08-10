@@ -5,11 +5,13 @@
 {% block content %}
 
 
-<!-- Main Content -->
-<div class="flex-1 p-5">
-  <!-- Your dashboard content goes here -->
-  <h1 class="text-2xl font-bold">Bem vindo ao seu painel</h1>
-  <p>Conteúdo do painel...</p>
+
+
+<div class="flex-1">
+  <h1 class="text-2xl font-bold">Dashboard</h1>
+  {% for media in media_files %}
+  <li>{{media.file.name}}</li>
+  {% endfor %}
 </div>
 </div>
 {% endblock %}

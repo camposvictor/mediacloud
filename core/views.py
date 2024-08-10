@@ -7,10 +7,29 @@ from django.contrib import messages
 from .forms import MediaFileForm
 from .models import MediaFile
 from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
+
 
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    media_files = MediaFile.objects.all()
+    media_type = request.GET.get('type')
+    if media_type:
+        media_files = media_files.filter(media_type=media_type)
+    return render(request, 'dashboard.html', {'media_files': media_files})
+
+@login_required
+def videos(request):
+    return render(request, 'videos.html')
+
+@login_required
+def images(request):
+    return render(request, 'images.html')
+
+@login_required
+def audios(request):
+    return render(request, 'audios.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -24,7 +43,7 @@ def login_view(request):
                 return redirect('dashboard')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'auth/login.html', {'form': form})
 
 def register_view(request):
     if request.method == 'POST':
@@ -35,7 +54,7 @@ def register_view(request):
             return redirect('dashboard')
     else:
         form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'auth/register.html', {'form': form})
 
 @login_required
 def edit_profile_view(request):
@@ -48,21 +67,36 @@ def edit_profile_view(request):
     else:
         form = EditProfileForm(instance=request.user)
     
-    return render(request, 'edit_profile.html', {'form': form})
+    return render(request, 'auth/edit_profile.html', {'form': form})
 
-@login_required
 def upload_media_view(request):
-    if request.method == 'POST':
-        form = MediaFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            media_file = form.save(commit=False)
-            media_file.user = request.user
-            media_file.save()
-            messages.success(request, 'Arquivo enviado com sucesso!')
-            return redirect('dashboard')
-    else:
-        form = MediaFileForm()
-    return render(request, 'upload_media.html', {'form': form})
+    if request.method == 'POST' and request.FILES.get('file'):
+        uploaded_file = request.FILES['file']
+
+        if uploaded_file.size > 5 * 1024 * 1024:
+            return HttpResponse("<span id='upload-form-alert' class='alert alert-error my-2'>O arquivo excede o tamanho máximo de 10MB", status=400)
+        if uploaded_file.content_type.startswith('image/'):
+            media_type = 'image'
+        elif uploaded_file.content_type.startswith('audio/'):
+            media_type = 'audio'
+        elif uploaded_file.content_type.startswith('video/'):
+            media_type = 'video'
+        else:
+            return HttpResponse("<span id='upload-form-alert' class='alert alert-error my-2'>Tipo de arquivo não suportado.</span>", status=400)
+
+        media_file = MediaFile.objects.create(
+            user=request.user,
+            file=uploaded_file,
+            media_type=media_type
+        )
+
+        messages.success(request, f"{media_file.get_file_name()} carregado com sucesso")
+        response = HttpResponse()
+        response["HX-Redirect"] = '/'
+        return response
+
+    return HttpResponse("<span id='upload-form-alert' class='alert alert-error my-2'>Ocorreu um erro inesperado.", status=400)
+
 
 @login_required
 def edit_media_view(request, pk):

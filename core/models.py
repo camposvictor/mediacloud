@@ -28,11 +28,9 @@ class MediaFile(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='media_files/')
+    file = models.FileField(upload_to='media/')
     media_type = models.CharField(max_length=5, choices=MEDIA_TYPE_CHOICES)
-    description = models.TextField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    tags = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.file.name}"
@@ -40,10 +38,7 @@ class MediaFile(models.Model):
     def get_file_name(self):
         return self.file.name
 
-    def get_tags_list(self):
-        return self.tags.split(',') if self.tags else []
-
     class Meta:
         indexes = [
-            models.Index(fields=['description', 'file', 'tags']),
+            models.Index(fields=['file']),
         ]

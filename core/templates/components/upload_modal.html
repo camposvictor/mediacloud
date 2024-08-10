@@ -1,0 +1,51 @@
+{% load static %}
+
+<button class="btn btn-primary mt-6 w-full" onclick="openModal()">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload">
+    <path d="M12 13v8" />
+    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+    <path d="m8 17 4-4 4 4" />
+  </svg>
+  Carregar arquivo
+</button>
+
+<dialog id="my_modal_1" class="modal">
+  <div class="modal-box" hx-ext="response-targets">
+    <h3 class="text-lg font-bold mb-4">Carregar Arquivo</h3>
+    <form class="w-full" enctype="multipart/form-data" hx-target-error='#upload-form-alert' hx-swap='outerHTML'
+      hx-trigger="submit" hx-post="{% url 'upload_media' %}" id="upload_form" hx-indicator="#upload-loading">
+      <span id="upload-form-alert"></span>
+      <div class="drop-zone w-full h-40 flex items-center justify-center rounded-lg border-2 border-dashed">
+        <div class="drop-zone__prompt flex flex-col items-center text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-cloud-upload">
+            <path d="M12 13v8" />
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+            <path d="m8 17 4-4 4 4" />
+          </svg>
+          <span class="text-center">
+            Solte o arquivo aqui ou <button type="button" class="btn btn-link px-1">Escolher arquivo</button>
+          </span>
+        </div>
+        <input type="file" name="file" class="drop-zone__input hidden">
+      </div>
+    </form>
+    <div class="flex justify-between text-gray-600 text-sm mt-1">
+      <p>Suporta aúdios, videos, imagens</p>
+      <p>Tamanho máximo: 10MB</p>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" id="modal_form">
+        <button class="btn" form="modal_form">Fechar</button>
+      </form>
+      <button type="submit" class="btn btn-primary btn-upload" form="upload_form" disabled>
+        <span class="loading loading-sm loading-spinner hidden [&.htmx-request]:block" id="upload-loading"></span>
+        Carregar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script src="{% static 'js/upload.js' %}"></script>

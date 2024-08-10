@@ -9,6 +9,8 @@
   <title>MediaCloud | {% block title %}{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com?plugins=typography,aspect-ratio,line-clamp,container-queries"></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://unpkg.com/htmx.org@2.0.1"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script>
   <!-- --p: 262 50% 40%;
   /* primary focus */
   --pf: 262 80% 40%;
@@ -63,7 +65,7 @@
   /* base 300 */
   --b3: 219 18% 15%;
   /* base content */
-  --bc: 220 13% 69%; -->
+  --bc: 21.01% 0.032 264.66 -->
   <style>
     [data-theme='light'] {
       --rounded-box: 6px;
@@ -76,12 +78,36 @@
       --border-btn: 1px;
       --tab-border: 1px;
       --tab-radius: 0.5rem;
+      --p: 51.06% 0.23 276.97;
+      --pf: 45.68% 0.215 277.02;
+      --pc: 100% 0 0;
+      --bc: 21.01% 0.032 264.66
     }
   </style>
 </head>
 
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  {% if messages %}
+  <ul id="messages">
+    <div class="toast toast-top toast-center">
+      {% for message in messages %}
+      <div class="text-sm font-medium text-white bg-gray-800 rounded p-2">
+        <span>{{message}}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </ul>
+  {% endif %}
   <main>
     {% block base_content %}
     {% endblock %}
   </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const messagesContainer = document.querySelector("#messages");
+      setTimeout(() => {
+        messagesContainer.remove();
+      }, 2000);
+    });
+  </script>
+</body>
