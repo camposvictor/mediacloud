@@ -1,15 +1,126 @@
 {% extends "base/app_base.html" %}
 
-{% block title %}Videos{% endblock %}
-{% block heading %}Videos{% endblock %}
+{% block title %}Vídeos{% endblock %}
+{% block heading %}Vídeos{% endblock %}
 
 {% block content %}
-
-
 <div class="flex-1">
-  {% for media in media_list %}
-  <li>{{media.media_type}}</li>
-  {% endfor %}
+  <h1 class="text-2xl font-bold mb-4">Vídeos</h1>
+  {% if videos %}
+    <ul class="list-none p-0 m-0">
+      {% for video in videos %}
+        <li class="flex items-center mb-2">
+          <div class="border border-gray-300 rounded-lg p-2 flex items-center w-full">
+            <div class="w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer relative"
+              onclick="openModalVideo('{{ video.file.url }}', '{{ video.get_file_name }}', '{{ video.file_size }}', '{{ video.uploaded_at }}', '{{ video.mime_type }}', '{{ video.duration }}', '{{ video.resolution }}', '{{ video.frame_rate }}', '{{ video.video_codec }}', '{{ video.audio_codec }}', '{{ video.bitrate }}', '{{ video.genre }}', '{{ video.tags }}', '{{ video.description }}')">
+              {% if video.thumbnail_file %}
+                <img src="{{ video.thumbnail_file.url }}" alt="Thumbnail do vídeo" class="object-cover w-full h-full">
+              {% else %}
+                <div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Sem Thumbnail</div>
+              {% endif %}
+            </div>
+            <div class="flex-1 ml-4 flex items-center">
+              <p class="mr-2 w-60 truncate">{{ video.file.name|slice:"6:" }}</p>
+              <div class="ml-auto flex items-center">
+                <button title="Editar" class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2" onclick="openEditModal('{{ video.id }}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.25 4.75l3.5 3.5-8.5 8.5H7v-3.25L15.25 4.75zM19.25 5.25a1.5 1.5 0 1 1-2.121-2.121 1.5 1.5 0 0 1 2.121 2.121z" />
+                  </svg>
+                </button>
+                <button title="Excluir" class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center" onclick="deleteVideo('{{ video.id }}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Não há vídeos</p>
+  {% endif %}
 </div>
+
+<!-- Modal -->
+<div id="videoModal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg relative max-w-[100%] max-h-[100%] overflow-auto min-w-[400px]">
+    <span class="absolute top-0 right-0 text-black text-2xl cursor-pointer" onclick="closeModalVideo()">&times;</span>
+    <div class="flex flex-col items-center w-full">
+      <video id="modalVideo" controls class="w-full">
+        <source id="modalVideoSrc" src="" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+      </video>
+      <div class="text-center mt-4">
+        <p id="modalVideoName" class="font-bold"></p>
+        <button id="showVideoDetailsButton" class="text-blue-500 mt-2" onclick="toggleVideoDetails()">Mostrar Detalhes</button>
+        <div id="modalVideoDetails" class="hidden mt-4 text-center">
+          <p id="modalVideoSize"></p>
+          <p id="modalVideoDate"></p>
+          <p id="modalVideoMime"></p>
+          <p id="modalVideoDuration"></p>
+          <p id="modalVideoResolution"></p>
+          <p id="modalVideoFrameRate"></p>
+          <p id="modalVideoCodec"></p>
+          <p id="modalAudioCodec"></p>
+          <p id="modalVideoBitrate"></p>
+          <p id="modalVideoGenre"></p>
+          <!-- Adicionando tags e descrição -->
+          <p id="modalVideoTags" class="mt-2"></p>
+          <p id="modalVideoDescription" class="mt-2"></p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  function openModalVideo(videoUrl, videoName, videoSize, videoDate, videoMime, videoDuration, videoResolution, videoFrameRate, videoCodec, audioCodec, bitrate, genre, tags, description) {
+    var videoElement = document.getElementById('modalVideo');
+    var videoSrc = document.getElementById('modalVideoSrc');
+
+    videoSrc.src = videoUrl;
+    videoElement.load();
+    videoElement.play();
+
+    document.getElementById('modalVideoName').textContent = 'Nome: ' + videoName;
+    document.getElementById('modalVideoSize').textContent = 'Tamanho do arquivo: ' + videoSize + ' bytes';
+    document.getElementById('modalVideoDate').textContent = 'Data: ' + videoDate;
+    document.getElementById('modalVideoMime').textContent = 'Tipo MIME: ' + videoMime;
+    document.getElementById('modalVideoDuration').textContent = 'Duração: ' + videoDuration;
+    document.getElementById('modalVideoResolution').textContent = 'Resolução: ' + videoResolution;
+    document.getElementById('modalVideoFrameRate').textContent = 'Taxa de quadros: ' + videoFrameRate;
+    document.getElementById('modalVideoCodec').textContent = 'Codec de vídeo: ' + videoCodec;
+    document.getElementById('modalAudioCodec').textContent = 'Codec de áudio: ' + audioCodec;
+    document.getElementById('modalVideoBitrate').textContent = 'Bitrate: ' + bitrate;
+    document.getElementById('modalVideoGenre').textContent = 'Gênero: ' + genre;
+
+    // Adicionando tags e descrição
+    document.getElementById('modalVideoTags').textContent = 'Tags: ' + tags;
+    document.getElementById('modalVideoDescription').textContent = 'Descrição: ' + description;
+
+    document.getElementById('videoModal').classList.remove('hidden');
+  }
+
+  function toggleVideoDetails() {
+    let details = document.getElementById('modalVideoDetails');
+    let button = document.getElementById('showVideoDetailsButton');
+    if (details.classList.contains('hidden')) {
+      details.classList.remove('hidden');
+      button.textContent = 'Ocultar Detalhes';
+    } else {
+      details.classList.add('hidden');
+      button.textContent = 'Mostrar Detalhes';
+    }
+  }
+
+  function closeModalVideo() {
+    const modal = document.getElementById('videoModal');
+    modal.classList.add('hidden');
+    var videoElement = document.getElementById('modalVideo');
+    videoElement.pause();
+    videoElement.currentTime = 0;
+  }
+</script>
 {% endblock %}

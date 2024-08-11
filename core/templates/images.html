@@ -12,7 +12,7 @@
         <li class="flex items-center mb-2">
           <div class="border border-gray-300 rounded-lg p-2 flex items-center w-full">
             <!-- Contêiner da Imagem, Nome e Botões -->
-            <div class="flex items-center w-10 h-10 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer">
+            <div class="flex items-center w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer">
               <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="object-cover w-full h-full"
               onclick="openModalImage('{{ image.file.url }}', '{{ image.get_file_name }}', '{{ image.file_size }}', '{{ image.uploaded_at }}', '{{ image.mime_type }}',
                 '{{ image.height }}', '{{ image.width }}', '{{ image.color_depth }}',
@@ -41,27 +41,32 @@
     <p>Não há imagens</p>
   {% endif %}
 </div>
+
 <!-- Modal -->
 <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
-  <div class="bg-white p-4 rounded-lg relative max-w-[90%] max-h-[90%] overflow-auto">
-    <span class="absolute top-4 right-4 text-black text-2xl cursor-pointer" onclick="closeModalImage()">&times;</span>
+  <div class="bg-white p-4 rounded-lg relative max-w-[90%] max-h-[90%] overflow-auto min-w-[400px] min-h-[300px]">
+    <span class="absolute top-1 right-1 text-black text-2xl cursor-pointer" onclick="closeModalImage()">&times;</span>
     <div class="flex justify-center items-center w-full h-full">
-      <img id="modalImage" src="" alt="Imagem">
+      <img id="modalImage" src="" alt="Imagem" class="max-w-full max-h-full">
     </div>
-    <div id="modalDetails" class="text-center mt-4">
+    <div class="text-center mt-4">
       <p id="modalImageName" class="font-bold"></p>
-      <p id="modalImageSize"></p>
-      <p id="modalImageDate"></p>
-      <p id="modalImageMime"></p>
-      <p id="modalImageHeight"></p>
-      <p id="modalImageWidth"></p>
-      <p id="modalImageColorDepth"></p>
-      <p id="modalImageResolution"></p>
-      <p id="modalImageDescription" class="mt-2 font-medium"></p>
-      <p id="modalImageTags" class="mt-2 font-medium"></p>
+      <button id="showImageDetailsButton" class="text-blue-500 mt-2" onclick="toggleImageDetails()">Mostrar Detalhes</button>
+      <div id="modalImageDetails" class="hidden mt-4">
+        <p id="modalImageSize"></p>
+        <p id="modalImageDate"></p>
+        <p id="modalImageMime"></p>
+        <p id="modalImageHeight"></p>
+        <p id="modalImageWidth"></p>
+        <p id="modalImageColorDepth"></p>
+        <p id="modalImageResolution"></p>
+        <p id="modalImageDescription" class="mt-2 font-medium"></p>
+        <p id="modalImageTags" class="mt-2 font-medium"></p>
+      </div>
     </div>
   </div>
 </div>
+
 <script>
   function openModalImage(imageUrl, imageName, imageSize, imageDate, imageMime, imageHeight, imageWidth, imageColorDepth, imageResolution, imageDescription, imageTags) {
     const cleanImageNameWithPrefixRemoved = imageName.replace(/^media\//, '');
@@ -79,8 +84,21 @@
     document.getElementById('modalImageTags').textContent = 'Tags: ' + imageTags;
     document.getElementById('imageModal').classList.remove('hidden');
   }
+
   function closeModalImage() {
     document.getElementById('imageModal').classList.add('hidden');
+  }
+
+  function toggleImageDetails() {
+    const detailsDiv = document.getElementById('modalImageDetails');
+    const button = document.getElementById('showImageDetailsButton');
+    if (detailsDiv.classList.contains('hidden')) {
+      detailsDiv.classList.remove('hidden');
+      button.textContent = 'Ocultar Detalhes';
+    } else {
+      detailsDiv.classList.add('hidden');
+      button.textContent = 'Mostrar Detalhes';
+    }
   }
 </script>
 {% endblock %}

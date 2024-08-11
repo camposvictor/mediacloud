@@ -18,37 +18,32 @@ from io import BytesIO
 @method_decorator(login_required, name='dispatch')
 class ImageView(View):
     def get(self, request):
-        images = ImageFile.objects.all()  # Assumindo que você quer todas as imagens
+        images = ImageFile.objects.all()
         return render(request, 'images.html', {'images': images})
 
     def post(self, request):
         if request.FILES.get('file'):
             uploaded_file = request.FILES['file']
 
-            # Verifica o tipo MIME
             allowed_mime_types = [choice[0] for choice in ImageFile.IMAGE_MIME_CHOICES]
             if uploaded_file.content_type not in allowed_mime_types:
                 return HttpResponse("<span id='upload-form-alert-image' class='alert alert-error my-2'>Tipo de arquivo não suportado.</span>", status=400)
 
-            # Verifica o tamanho do arquivo
             if uploaded_file.size > 10 * 1024 * 1024:  # 10MB
                 return HttpResponse("<span id='upload-form-alert-image' class='alert alert-error my-2'>O arquivo excede o tamanho máximo de 10MB.</span>", status=400)
 
-            # Criação do ImageFile
             try:
-                # Abre a imagem e obtém propriedades
                 image = Image.open(uploaded_file)
                 width, height = image.size
-                color_depth = image.info.get('bits', 8)  # Obtém a profundidade de cor, valor padrão de 8 bits
+                color_depth = image.info.get('bits', 8)
                 resolution = f"{width}x{height}"
-                exif_data = image.getexif() or {}  # Obtém os dados EXIF, se disponíveis
+                exif_data = image.getexif() or None
 
-                # Criação da instância de ImageFile
                 media_file = ImageFile.objects.create(
                     user=request.user,
                     file=uploaded_file,
-                    description=request.POST.get('description', ''),  # Obtém a descrição se disponível
-                    tags=request.POST.get('tags', ''),  # Obtém as tags se disponíveis
+                    description=request.POST.get('description', ''),
+                    tags=request.POST.get('tags', ''),
                     mime_type=uploaded_file.content_type,
                     width=width,
                     height=height,

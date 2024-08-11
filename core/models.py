@@ -80,6 +80,7 @@ class VideoFile(MediaFile):
     audio_codec = models.CharField(max_length=50, blank=True, null=True)
     bitrate = models.IntegerField(blank=True, null=True)
     genre = models.CharField(max_length=50, blank=True, null=True)
+    thumbnail_file = models.ImageField(upload_to="thumbnails/", blank=True, null=True)
 
     class Meta:
         indexes = [
