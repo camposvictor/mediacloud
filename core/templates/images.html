@@ -65,6 +65,41 @@
       </div>
     </div>
   </div>
+<!-- Diálogo para Editar Imagem -->
+<dialog id="modal_edit_image" class="modal hidden">
+  <div class="modal-box" hx-ext="response-targets">
+    <h3 class="text-lg font-bold mb-4">Editar Imagem</h3>
+    <form class="w-full" hx-target="#edit-form-alert-image" hx-swap='outerHTML'
+      hx-trigger="submit" hx-put="{% url 'images' %}" id="edit_form_image" hx-indicator="#edit-loading-image">
+      <span id="edit-form-alert-image"></span>
+
+      <!-- Campo escondido para o ID da imagem -->
+      <input type="hidden" name="id" id="edit_image_id">
+
+      <!-- Campos para edição -->
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Descrição</span>
+        </div>
+        <textarea type="text" name="description" id="edit_image_description" class="textarea textarea-bordered w-full"></textarea>
+      </label>
+      <label class="form-control w-full">
+        <div class="label">
+          <span class="label-text">Tags</span>
+        </div>
+        <input type="text" name="tags" id="edit_image_tags" class="input input-bordered w-full" placeholder="Adicione as tags separadas por vírgula">
+      </label>
+
+      <div class="modal-action">
+        <button type="button" class="btn" onclick="closeEditModal()">Fechar</button>
+        <button type="submit" class="btn btn-primary btn-upload">
+          <span class="loading loading-sm loading-spinner hidden" id="edit-loading-image"></span>
+          Salvar alterações
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>
 </div>
 
 <script>
@@ -88,6 +123,29 @@
   function closeModalImage() {
     document.getElementById('imageModal').classList.add('hidden');
   }
+  function openEditModal(imageId) {
+    const editModal = document.querySelector('#modal_edit_image');
+    if (editModal) {
+      document.getElementById('edit_image_id').value = imageId;
+      editModal.classList.remove('hidden');
+      editModal.showModal();
+    }
+  }
+
+function closeEditModal() {
+    const editModal = document.querySelector('#modal_edit_image');
+    if (editModal) {
+        editModal.classList.add('hidden');
+        editModal.close();
+    }
+}
+
+// Fechar o modal ao clicar fora dele
+document.addEventListener('click', (event) => {
+    if (event.target === document.querySelector('#modal_edit_image')) {
+        closeEditModal();
+    }
+});
 
   function toggleImageDetails() {
     const detailsDiv = document.getElementById('modalImageDetails');
