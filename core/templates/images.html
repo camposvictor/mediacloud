@@ -10,10 +10,29 @@
     <ul class="list-none p-0 m-0">
       {% for image in images %}
         <li class="flex items-center mb-2">
-          <div class="flex items-center">
-            <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="w-12 h-auto mr-4 border border-gray-300 p-1 cursor-pointer"
-            onclick="openModalImage('{{ image.file.url }}')">
-            <p>{{ image.file.name|slice:"6:" }}</p>
+          <div class="border border-gray-300 rounded-lg p-2 flex items-center w-full">
+            <!-- Contêiner da Imagem, Nome e Botões -->
+            <div class="flex items-center w-10 h-10 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer">
+              <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="object-cover w-full h-full"
+              onclick="openModalImage('{{ image.file.url }}', '{{ image.get_file_name }}', '{{ image.file_size }}', '{{ image.uploaded_at }}', '{{ image.mime_type }}',
+                '{{ image.height }}', '{{ image.width }}', '{{ image.color_depth }}',
+                '{{ image.resolution }}', '{{ image.description }}', '{{ image.tags }}')">
+            </div>
+            <div class="flex-1 ml-4 flex items-center">
+              <p class="mr-2 w-60 truncate">{{ image.file.name|slice:"6:" }}</p>
+              <div class="ml-auto flex items-center">
+                <button title="Editar" class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2" onclick="openEditModal('{{ image.id }}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.25 4.75l3.5 3.5-8.5 8.5H7v-3.25L15.25 4.75zM19.25 5.25a1.5 1.5 0 1 1-2.121-2.121 1.5 1.5 0 0 1 2.121 2.121z" />
+                  </svg>
+                </button>
+                <button title="Excluir" class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center" onclick="deleteImage('{{ image.id }}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </li>
       {% endfor %}
@@ -22,19 +41,44 @@
     <p>Não há imagens</p>
   {% endif %}
 </div>
-
 <!-- Modal -->
-<div id="imageModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
-  <span class="absolute top-4 right-4 text-white text-2xl cursor-pointer" onclick="closeModalImage()">&times;</span>
-  <img id="modalImage" class="max-w-full max-h-full" src="" alt="Imagem">
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
+  <div class="bg-white p-4 rounded-lg relative max-w-[90%] max-h-[90%] overflow-auto">
+    <span class="absolute top-4 right-4 text-black text-2xl cursor-pointer" onclick="closeModalImage()">&times;</span>
+    <div class="flex justify-center items-center w-full h-full">
+      <img id="modalImage" src="" alt="Imagem">
+    </div>
+    <div id="modalDetails" class="text-center mt-4">
+      <p id="modalImageName" class="font-bold"></p>
+      <p id="modalImageSize"></p>
+      <p id="modalImageDate"></p>
+      <p id="modalImageMime"></p>
+      <p id="modalImageHeight"></p>
+      <p id="modalImageWidth"></p>
+      <p id="modalImageColorDepth"></p>
+      <p id="modalImageResolution"></p>
+      <p id="modalImageDescription" class="mt-2 font-medium"></p>
+      <p id="modalImageTags" class="mt-2 font-medium"></p>
+    </div>
+  </div>
 </div>
-
 <script>
-  function openModalImage(imageUrl) {
+  function openModalImage(imageUrl, imageName, imageSize, imageDate, imageMime, imageHeight, imageWidth, imageColorDepth, imageResolution, imageDescription, imageTags) {
+    const cleanImageNameWithPrefixRemoved = imageName.replace(/^media\//, '');
+    const cleanImageName = cleanImageNameWithPrefixRemoved.split('.').slice(0, -1).join('.');
     document.getElementById('modalImage').src = imageUrl;
+    document.getElementById('modalImageName').textContent = 'Nome: ' + cleanImageName;
+    document.getElementById('modalImageSize').textContent = 'Tamanho do arquivo: ' + imageSize + ' bytes';
+    document.getElementById('modalImageDate').textContent = 'Data: ' + imageDate
+    document.getElementById('modalImageMime').textContent = 'Tipo MIME: ' + imageMime
+    document.getElementById('modalImageHeight').textContent = 'Altura: ' + imageHeight + ' pixels'
+    document.getElementById('modalImageWidth').textContent = 'Largura: ' + imageWidth + ' pixels'
+    document.getElementById('modalImageColorDepth').textContent = 'Cor de profundidade: ' + imageColorDepth
+    document.getElementById('modalImageResolution').textContent = 'Resolução: ' + imageResolution
+    document.getElementById('modalImageDescription').textContent = 'Descrição: ' + imageDescription;
+    document.getElementById('modalImageTags').textContent = 'Tags: ' + imageTags;
     document.getElementById('imageModal').classList.remove('hidden');
   }
-
   function closeModalImage() {
     document.getElementById('imageModal').classList.add('hidden');
   }
