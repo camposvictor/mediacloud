@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
-
 class CustomUser(AbstractUser):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -54,10 +53,10 @@ class ImageFile(MediaFile):
     ]
 
     mime_type = models.CharField(max_length=50, choices=IMAGE_MIME_CHOICES)
-    width = models.IntegerField()
-    height = models.IntegerField()
-    color_depth = models.IntegerField()
-    resolution = models.CharField(max_length=50)
+    width = models.IntegerField(blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
+    color_depth = models.IntegerField(blank=True, null=True)
+    resolution = models.CharField(max_length=50, blank=True, null=True)
     exif_data = models.JSONField(blank=True, null=True)
 
     class Meta:
@@ -74,12 +73,12 @@ class VideoFile(MediaFile):
     ]
 
     mime_type = models.CharField(max_length=50, choices=VIDEO_MIME_CHOICES)
-    duration = models.DurationField()
-    resolution = models.CharField(max_length=50)
-    frame_rate = models.FloatField()
-    video_codec = models.CharField(max_length=50)
-    audio_codec = models.CharField(max_length=50)
-    bitrate = models.IntegerField()
+    duration = models.DurationField(blank=True, null=True)
+    resolution = models.CharField(max_length=50, blank=True, null=True)
+    frame_rate = models.FloatField(blank=True, null=True)
+    video_codec = models.CharField(max_length=50, blank=True, null=True)
+    audio_codec = models.CharField(max_length=50, blank=True, null=True)
+    bitrate = models.IntegerField(blank=True, null=True)
     genre = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
@@ -96,10 +95,10 @@ class AudioFile(MediaFile):
     ]
 
     mime_type = models.CharField(max_length=50, choices=AUDIO_MIME_CHOICES)
-    duration = models.DurationField()
-    bitrate = models.IntegerField()
-    sample_rate = models.IntegerField()
-    channels = models.IntegerField()
+    duration = models.DurationField(blank=True, null=True)
+    bitrate = models.IntegerField(blank=True, null=True)
+    sample_rate = models.IntegerField(blank=True, null=True)
+    channels = models.IntegerField(blank=True, null=True)
     genre = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:

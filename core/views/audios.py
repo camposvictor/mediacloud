@@ -3,7 +3,6 @@ from django.contrib.auth import login, authenticate
 from core.forms import SignUpForm, EditProfileForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from core.forms import MediaFileForm
 from core.models import MediaFile
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
@@ -16,7 +15,7 @@ from django.utils.decorators import method_decorator
 class AudioView(View):
    def get(self, request):
     return render(request, 'audios.html')
-   
+
    def post(self, request):
     if request.FILES.get('file'):
         uploaded_file = request.FILES['file']
@@ -39,4 +38,3 @@ class AudioView(View):
         return response
 
     return HttpResponse("<span id='upload-form-alert-audio' class='alert alert-error my-2'>Ocorreu um erro inesperado.", status=400)
-      
