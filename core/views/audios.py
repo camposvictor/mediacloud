@@ -14,6 +14,23 @@ from mutagen import File
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 from datetime import timedelta
+from core.forms import EditAudioForm
+
+@login_required
+def edit_audio_view(request, id):
+    audio = get_object_or_404(AudioFile, id=id)
+    if request.method == 'POST':
+        form = EditAudioForm(request.POST, instance=audio)
+        if form.is_valid():
+            audio = form.save(commit=False)
+            audio.user = request.user
+            audio.save()
+            messages.success(request, 'Audio atualizada com sucesso!')
+            return redirect('audios')
+    else:
+        form = EditAudioForm(instance=audio)
+
+    return render(request, 'edit/edit_audio.html', {'form': form})
 
 class AudioView(View):
     def get(self, request):
@@ -38,6 +55,8 @@ class AudioView(View):
             sample_rate = audio_info.info.sample_rate if audio_info else None
             channels = audio_info.info.channels if audio_info else None
 
+            file_name = uploaded_file.name
+
             audio_file = AudioFile.objects.create(
                 user=request.user,
                 file=uploaded_file,
@@ -46,6 +65,7 @@ class AudioView(View):
                 bitrate=bitrate,
                 sample_rate=sample_rate,
                 channels=channels,
+                name=file_name,
                 description=request.POST.get('description', ''),
                 genre=request.POST.get('genre', ''),
                 tags=request.POST.get('tags', ''),

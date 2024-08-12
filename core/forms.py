@@ -46,7 +46,7 @@ class EditImageForm(forms.ModelForm):
         fields = ("name", "description", "tags")
 
 
-class EditAudioForm(forms.Form):
+class EditAudioForm(forms.ModelForm):
     name = forms.CharField(max_length=255, required=False)
     description = forms.CharField(max_length=255, required=False)
     tags = forms.CharField(max_length=255, required=False)
@@ -57,7 +57,7 @@ class EditAudioForm(forms.Form):
         fields = ("name", "description", "tags", "genre")
 
 
-class EditVideoForm(forms.Form):
+class EditVideoForm(forms.ModelForm):
     name = forms.CharField(max_length=255, required=False)
     description = forms.CharField(max_length=255, required=False)
     tags = forms.CharField(max_length=255, required=False)

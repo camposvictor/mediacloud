@@ -19,7 +19,7 @@
         <!-- Contêiner do Ícone de Play, Nome e Botões -->
         <div class="flex items-center w-8 h-8 overflow-hidden flex-shrink-0 p-2 cursor-pointer">
           <button
-            onclick="openModalAudio('{{ audio.file.url }}', '{{ audio.get_file_name }}', '{{ audio.file_size }}', '{{ audio.uploaded_at }}', '{{ audio.mime_type }}', '{{ audio.duration }}', '{{ audio.bitrate }}', '{{ audio.sample_rate }}', '{{ audio.channels }}', '{{ audio.genre }}', '{{ audio.tags }}', '{{ audio.description }}')">
+            onclick="openModalAudio('{{ audio.file.url }}', '{{ audio.name }}', '{{ audio.file_size }}', '{{ audio.uploaded_at }}', '{{ audio.mime_type }}', '{{ audio.duration }}', '{{ audio.bitrate }}', '{{ audio.sample_rate }}', '{{ audio.channels }}', '{{ audio.genre }}', '{{ audio.tags }}', '{{ audio.description }}')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-8 h-8 text-blue-500">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 4.5L16 12L6 19.5V4.5Z" />
@@ -27,7 +27,7 @@
           </button>
         </div>
         <div class="flex-1 ml-4 flex items-center">
-          <p class="mr-2 w-60 truncate">{{ audio.file.name|slice:"6:" }}</p>
+          <p class="mr-2 w-60 truncate">{{ audio.name }}</p>
           <div class="ml-auto flex items-center">
             <a href='/edit-audio/{{audio.id}}' title="Editar"
               class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2">

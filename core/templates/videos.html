@@ -11,7 +11,7 @@
     <li class="flex items-center mb-2">
       <div class="border border-gray-300 rounded-lg p-2 flex items-center w-full">
         <div class="w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer relative"
-          onclick="openModalVideo('{{ video.file.url }}', '{{ video.get_file_name }}', '{{ video.file_size }}', '{{ video.uploaded_at }}', '{{ video.mime_type }}', '{{ video.duration }}', '{{ video.resolution }}', '{{ video.frame_rate }}', '{{ video.video_codec }}', '{{ video.audio_codec }}', '{{ video.bitrate }}', '{{ video.genre }}', '{{ video.tags }}', '{{ video.description }}')">
+          onclick="openModalVideo('{{ video.file.url }}', '{{ video.name }}', '{{ video.file_size }}', '{{ video.uploaded_at }}', '{{ video.mime_type }}', '{{ video.duration }}', '{{ video.resolution }}', '{{ video.frame_rate }}', '{{ video.video_codec }}', '{{ video.audio_codec }}', '{{ video.bitrate }}', '{{ video.genre }}', '{{ video.tags }}', '{{ video.description }}')">
           {% if video.thumbnail_file %}
           <img src="{{ video.thumbnail_file.url }}" alt="Thumbnail do vídeo" class="object-cover w-full h-full">
           {% else %}
@@ -19,7 +19,7 @@
           {% endif %}
         </div>
         <div class="flex-1 ml-4 flex items-center">
-          <p class="mr-2 w-60 truncate">{{ video.file.name|slice:"6:" }}</p>
+          <p class="mr-2 w-60 truncate">{{ video.name }}</p>
           <div class="ml-auto flex items-center">
             <a href='/edit-video/{{video.id}}' title="Editar"
               class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2">

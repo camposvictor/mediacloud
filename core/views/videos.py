@@ -17,13 +17,32 @@ from django.core.files.base import ContentFile
 import random
 from PIL import Image
 import numpy as np
+from mutagen import File
+from core.forms import EditVideoForm
+
+
+@login_required
+def edit_video_view(request, id):
+    video = get_object_or_404(VideoFile, id=id)
+    if request.method == "POST":
+        form = EditVideoForm(request.POST, instance=video)
+        if form.is_valid():
+            video = form.save(commit=False)
+            video.user = request.user
+            video.save()
+            messages.success(request, "Video atualizada com sucesso!")
+            return redirect("videos")
+    else:
+        form = EditVideoForm(instance=video)
+
+    return render(request, "edit/edit_video.html", {"form": form})
 
 
 @method_decorator(login_required, name="dispatch")
 class VideoView(View):
     def get(self, request):
         videos = VideoFile.objects.all()
-        return render(request, 'videos.html', {'videos': videos})
+        return render(request, "videos.html", {"videos": videos})
 
     def post(self, request):
         if request.FILES.get("file"):
@@ -45,13 +64,33 @@ class VideoView(View):
                 )
 
             try:
+                # Usando moviepy para extrair propriedades do vídeo
                 clip = VideoFileClip(uploaded_file.temporary_file_path())
-                duration = clip.duration  # Duração em segundos
+                duration = clip.duration  # Duração em segundos (float)
                 resolution = f"{clip.size[0]}x{clip.size[1]}"
                 frame_rate = clip.fps
 
                 # Convertendo duração para timedelta
                 duration_timedelta = timedelta(seconds=duration)
+
+                # Usando mutagen para extrair informações de codec e bitrate
+                video_info = File(uploaded_file)
+
+                video_codec = (
+                    video_info.info.codec
+                    if hasattr(video_info.info, "codec")
+                    else "unknown"
+                )
+                audio_codec = (
+                    video_info.info.audio_codec
+                    if hasattr(video_info.info, "audio_codec")
+                    else "unknown"
+                )
+                bitrate = (
+                    video_info.info.bitrate
+                    if hasattr(video_info.info, "bitrate")
+                    else 0
+                )
 
                 # Gerando a thumbnail de um frame aleatório
                 frame_time = random.uniform(0, duration)
@@ -67,6 +106,8 @@ class VideoView(View):
                     thumbnail_io.getvalue(), name=f"{uploaded_file.name}_thumbnail.jpg"
                 )
 
+                file_name = uploaded_file.name
+
                 # Criação da instância de VideoFile
                 media_file = VideoFile.objects.create(
                     user=request.user,
@@ -79,10 +120,11 @@ class VideoView(View):
                     duration=duration_timedelta,  # Armazena como timedelta
                     resolution=resolution,
                     frame_rate=frame_rate,
-                    video_codec="unknown",
-                    audio_codec="unknown",
-                    bitrate=0,
-                    genre=request.POST.get("genre", ""),  # Obtém o gênero se disponível
+                    video_codec=video_codec,
+                    audio_codec=audio_codec,
+                    bitrate=bitrate,
+                    genre=request.POST.get("genre", ""),
+                    name=file_name,
                     thumbnail_file=thumbnail_file,
                 )
                 messages.success(
