@@ -14,59 +14,29 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from PIL import Image
 from io import BytesIO
+from core.forms import EditImageForm
 
 @login_required
 def edit_image_view(request, id):
-    if request.method == 'PATCH':
-        # troca por form de imagem;
-        form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+    image = get_object_or_404(ImageFile, id=id)
+    if request.method == 'POST':
+        form = EditImageForm(request.POST, instance=image)
         if form.is_valid():
-            form.save()
+            image = form.save(commit=False)
+            image.user = request.user  # Adicione o usuário ao campo 'user'
+            image.save()
             messages.success(request, 'Imagem atualizada com sucesso!')
             return redirect('images')
     else:
-        form = EditProfileForm(instance=request.user)
+        form = EditImageForm(instance=image)
 
     return render(request, 'edit/edit_image.html', {'form': form})
 
 @method_decorator(login_required, name='dispatch')
 class ImageView(View):
     def get(self, request):
-        image_id = request.GET.get('id')
-        if image_id:
-            image = get_object_or_404(ImageFile, id=image_id)
-            form = EditImageForm(instance=image)
-            return render(request, 'edit/edit_image.html', {'form': form, 'image': image})
-        else:
-            # Retorna a lista de imagens se nenhum ID for fornecido
-            images = ImageFile.objects.all()
-            return render(request, 'images.html', {'images': images})
-
-    def patch(self, request, *args, **kwargs):
-        try:
-            put_data = QueryDict(request.body)
-
-            image_id = put_data.get('id')
-            description = put_data.get('description')
-            tags = put_data.get('tags')
-            name = put_data.get('name')  # Novo campo para o nome da imagem
-
-            image = get_object_or_404(ImageFile, id=image_id)
-
-            image.description = description
-            image.tags = tags
-            image.name = name  # Atualiza o nome da imagem
-            image.save()
-
-            messages.success(request, 'Imagem atualizada com sucesso!')
-
-            form = EditImageForm(instance=request.user)
-
-            response = HttpResponse()
-            response["HX-Redirect"] = '/images'
-            return response
-        except Exception as e:
-            return HttpResponse(f"<span id='upload-form-alert-image' class='alert alert-error my-2'>Erro ao processar a imagem: {str(e)}</span>", status=500)
+        images = ImageFile.objects.all()
+        return render(request, 'images.html', {'images': images})
 
     def post(self, request):
         if request.FILES.get('file'):
@@ -80,15 +50,21 @@ class ImageView(View):
                 return HttpResponse("<span id='upload-form-alert-image' class='alert alert-error my-2'>O arquivo excede o tamanho máximo de 10MB.</span>", status=400)
 
             try:
+                # Abrir a imagem para obter metadados
                 image = Image.open(uploaded_file)
                 width, height = image.size
                 color_depth = image.info.get('bits', 8)
                 resolution = f"{width}x{height}"
                 exif_data = image.getexif() or None
 
+                # Obter o nome do arquivo a partir do arquivo carregado
+                file_name = uploaded_file.name
+
+                # Criar o objeto ImageFile
                 media_file = ImageFile.objects.create(
                     user=request.user,
                     file=uploaded_file,
+                    name=file_name,  # Usa o nome do arquivo do objeto `uploaded_file`
                     description=request.POST.get('description', ''),
                     tags=request.POST.get('tags', ''),
                     mime_type=uploaded_file.content_type,

@@ -13,12 +13,12 @@
         <!-- Contêiner da Imagem, Nome e Botões -->
         <div
           class="flex items-center w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer">
-          <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="object-cover w-full h-full" onclick="openModalImage('{{ image.file.url }}', '{{ image.get_file_name }}', '{{ image.file_size }}', '{{ image.uploaded_at }}', '{{ image.mime_type }}',
+          <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="object-cover w-full h-full" onclick="openModalImage('{{ image.file.url }}', '{{ image.name }}', '{{ image.file_size }}', '{{ image.uploaded_at }}', '{{ image.mime_type }}',
                 '{{ image.height }}', '{{ image.width }}', '{{ image.color_depth }}',
                 '{{ image.resolution }}', '{{ image.description }}', '{{ image.tags }}')">
         </div>
         <div class="flex-1 ml-4 flex items-center">
-          <p class="mr-2 w-60 truncate">{{ image.file.name|slice:"6:" }}</p>
+          <p class="mr-2 w-60 truncate">{{ image.name }}</p>
           <div class="ml-auto flex items-center">
             <a href='/edit-image/{{image.id}}' title="Editar"
               class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2">
@@ -75,10 +75,8 @@
 
   <script>
     function openModalImage(imageUrl, imageName, imageSize, imageDate, imageMime, imageHeight, imageWidth, imageColorDepth, imageResolution, imageDescription, imageTags) {
-      const cleanImageNameWithPrefixRemoved = imageName.replace(/^media\//, '');
-      const cleanImageName = cleanImageNameWithPrefixRemoved.split('.').slice(0, -1).join('.');
       document.getElementById('modalImage').src = imageUrl;
-      document.getElementById('modalImageName').textContent = 'Nome: ' + cleanImageName;
+      document.getElementById('modalImageName').textContent = 'Nome: ' + imageName;
       document.getElementById('modalImageSize').textContent = 'Tamanho do arquivo: ' + imageSize + ' bytes';
       document.getElementById('modalImageDate').textContent = 'Data: ' + imageDate
       document.getElementById('modalImageMime').textContent = 'Tipo MIME: ' + imageMime

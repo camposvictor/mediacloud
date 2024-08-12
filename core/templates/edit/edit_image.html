@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="w-full md:max-w-md mx-auto flex flex-col">
-  <form method="patch" class="space-y-4" enctype="multipart/form-data">
+  <form method="post" class="space-y-4" enctype="multipart/form-data">
     {% csrf_token %}
     {% if form.non_field_errors %}
     <div role="alert" class="alert alert-error">
