@@ -23,9 +23,9 @@ def delete_image(request, id):
         image.delete()
         messages.success(request, f'Imagem "{image.get_file_name}" excluída com sucesso!')
         response = HttpResponse()
-        response["HX-Redirect"] = '/'
+        response["HX-Redirect"] = '/images'
         return response
-    return redirect('images') 
+    return redirect('images')
 
 @login_required
 def edit_image_view(request, id):

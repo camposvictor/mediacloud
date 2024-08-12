@@ -10,9 +10,11 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('videos/', views.VideoView.as_view(), name='videos'),
     path('edit-video/<int:id>', views.edit_video_view, name='edit-video'),
+    path('delete-video/<int:id>', views.delete_video, name='delete_video'),
     path('images/', views.ImageView.as_view(), name='images'),
     path('edit-image/<int:id>', views.edit_image_view, name='edit-image'),
     path('delete-image/<int:id>', views.delete_image, name='delete_image'),
     path('audios/', views.AudioView.as_view(), name='audios'),
     path('edit-audio/<int:id>', views.edit_audio_view, name='edit-audio'),
+    path('delete-audio/<int:id>', views.delete_audio_view, name='edit-audio'),
 ]

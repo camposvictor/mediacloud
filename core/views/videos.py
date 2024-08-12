@@ -20,6 +20,16 @@ import numpy as np
 from mutagen import File
 from core.forms import EditVideoForm
 
+@login_required
+def delete_video(request, id):
+    if request.method == 'POST':
+        video = get_object_or_404(VideoFile, id=id)
+        video.delete()
+        messages.success(request, f'Video "{video.name}" excluído com sucesso!')
+        response = HttpResponse()
+        response["HX-Redirect"] = '/videos'
+        return response
+    return redirect('videos')
 
 @login_required
 def edit_video_view(request, id):

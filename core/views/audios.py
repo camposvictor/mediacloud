@@ -17,6 +17,17 @@ from datetime import timedelta
 from core.forms import EditAudioForm
 
 @login_required
+def delete_audio_view(request, id):
+    if request.method == 'POST':
+        audio = get_object_or_404(AudioFile, id=id)
+        audio.delete()
+        messages.success(request, f'Audio "{audio.name}" excluído com sucesso!')
+        response = HttpResponse()
+        response["HX-Redirect"] = '/audio'
+        return response
+    return redirect('audio')
+
+@login_required
 def edit_audio_view(request, id):
     audio = get_object_or_404(AudioFile, id=id)
     if request.method == 'POST':
