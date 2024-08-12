@@ -13,7 +13,7 @@
         <!-- Contêiner da Imagem, Nome e Botões -->
         <div
           class="flex items-center w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer">
-          <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="object-cover w-full h-full" onclick="openModalImage('{{ image.file.url }}', '{{ image.name }}', '{{ image.file_size }}', '{{ image.uploaded_at }}', '{{ image.mime_type }}',
+          <img src="{{ image.file.url }}" alt="{{ image.media_type }}" class="object-cover w-full h-full" onclick="openModalImage('{{ image.file.url }}', '{{ image.get_file_name }}', '{{ image.file_size }}', '{{ image.uploaded_at }}', '{{ image.mime_type }}',
                 '{{ image.height }}', '{{ image.width }}', '{{ image.color_depth }}',
                 '{{ image.resolution }}', '{{ image.description }}', '{{ image.tags }}')">
         </div>
@@ -30,7 +30,7 @@
             </a>
             <button title="Excluir"
               class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center"
-              onclick="deleteImage('{{ image.id }}')">
+              onclick="openDeleteModal('{{ image.id }}', '{{ image.name }}')">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -72,45 +72,68 @@
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    function openModalImage(imageUrl, imageName, imageSize, imageDate, imageMime, imageHeight, imageWidth, imageColorDepth, imageResolution, imageDescription, imageTags) {
-      document.getElementById('modalImage').src = imageUrl;
-      document.getElementById('modalImageName').textContent = 'Nome: ' + imageName;
-      document.getElementById('modalImageSize').textContent = 'Tamanho do arquivo: ' + imageSize + ' bytes';
-      document.getElementById('modalImageDate').textContent = 'Data: ' + imageDate
-      document.getElementById('modalImageMime').textContent = 'Tipo MIME: ' + imageMime
-      document.getElementById('modalImageHeight').textContent = 'Altura: ' + imageHeight + ' pixels'
-      document.getElementById('modalImageWidth').textContent = 'Largura: ' + imageWidth + ' pixels'
-      document.getElementById('modalImageColorDepth').textContent = 'Cor de profundidade: ' + imageColorDepth
-      document.getElementById('modalImageResolution').textContent = 'Resolução: ' + imageResolution
-      document.getElementById('modalImageDescription').textContent = 'Descrição: ' + imageDescription;
-      document.getElementById('modalImageTags').textContent = 'Tags: ' + imageTags;
-      document.getElementById('imageModal').classList.remove('hidden');
-    }
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class=" fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
+  <div class="bg-white p-8 shadow-lg  rounded relative max-w-md mx-auto">
+    <span class="absolute top-2 right-2 btn btn-circle btn-ghost btn-sm" onclick="closeDeleteModal()"><svg
+        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg></span>
+    <div class="text-center">
+      <p id="deleteModalText" class="mb-8">Você tem certeza que deseja excluir esta imagem?</p>
+      <div class="flex space-x-2 justify-center">
+        <button class="btn" onclick="closeDeleteModal()">Cancelar</button>
+        <button id="deleteButton" hx-post='/delete-image' type="submit" class="btn btn-error">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-    function closeModalImage() {
-      document.getElementById('imageModal').classList.add('hidden');
-    }
-    function openEditModal(imageId) {
-      const editModal = document.querySelector('#modal_edit_image');
-      if (editModal) {
-        document.getElementById('edit_image_id').value = imageId;
-        editModal.classList.remove('hidden');
-        editModal.showModal();
-      }
-    }
+<script>
+  function openModalImage(imageUrl, imageName, imageSize, imageDate, imageMime, imageHeight, imageWidth, imageColorDepth, imageResolution, imageDescription, imageTags) {
+    document.getElementById('modalImage').src = imageUrl;
+    document.getElementById('modalImageName').textContent = 'Nome: ' + imageName;
+    document.getElementById('modalImageSize').textContent = 'Tamanho do arquivo: ' + imageSize + ' bytes';
+    document.getElementById('modalImageDate').textContent = 'Data: ' + imageDate
+    document.getElementById('modalImageMime').textContent = 'Tipo MIME: ' + imageMime
+    document.getElementById('modalImageHeight').textContent = 'Altura: ' + imageHeight + ' pixels'
+    document.getElementById('modalImageWidth').textContent = 'Largura: ' + imageWidth + ' pixels'
+    document.getElementById('modalImageColorDepth').textContent = 'Cor de profundidade: ' + imageColorDepth
+    document.getElementById('modalImageResolution').textContent = 'Resolução: ' + imageResolution
+    document.getElementById('modalImageDescription').textContent = 'Descrição: ' + imageDescription;
+    document.getElementById('modalImageTags').textContent = 'Tags: ' + imageTags;
+    document.getElementById('imageModal').classList.remove('hidden');
+  }
 
-    function toggleImageDetails() {
-      const detailsDiv = document.getElementById('modalImageDetails');
-      const button = document.getElementById('showImageDetailsButton');
-      if (detailsDiv.classList.contains('hidden')) {
-        detailsDiv.classList.remove('hidden');
-        button.textContent = 'Ocultar Detalhes';
-      } else {
-        detailsDiv.classList.add('hidden');
-        button.textContent = 'Mostrar Detalhes';
-      }
+  function closeModalImage() {
+    document.getElementById('imageModal').classList.add('hidden');
+  }
+
+  function openDeleteModal(imageId, imageName) {
+    htmx.find('#deleteButton').setAttribute('hx-post', '/delete-image/' + imageId);
+    htmx.process('#deleteButton');
+    document.getElementById('deleteModalText').textContent = `Você tem certeza que deseja excluir a imagem "${imageName}"?`;
+    document.getElementById('deleteModal').classList.remove('hidden');
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+  }
+
+  function toggleImageDetails() {
+    const detailsDiv = document.getElementById('modalImageDetails');
+    const button = document.getElementById('showImageDetailsButton');
+    if (detailsDiv.classList.contains('hidden')) {
+      detailsDiv.classList.remove('hidden');
+      button.textContent = 'Ocultar Detalhes';
+    } else {
+      detailsDiv.classList.add('hidden');
+      button.textContent = 'Mostrar Detalhes';
     }
-  </script>
-  {% endblock %}
+  }
+</script>
+{% endblock %}
