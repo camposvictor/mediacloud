@@ -18,35 +18,42 @@ from io import BytesIO
 @method_decorator(login_required, name='dispatch')
 class ImageView(View):
     def get(self, request):
-        images = ImageFile.objects.all()
-        return render(request, 'images.html', {'images': images})
-    def put(self, request):
-        try:
-            # Converte o corpo da requisição PUT para um QueryDict
-            put_data = QueryDict(request.body)
-            print(put_data)
+        image_id = request.GET.get('id')
+        if image_id:
+            image = get_object_or_404(ImageFile, id=image_id)
+            form = EditImageForm(instance=image)
+            return render(request, 'edit/edit_image.html', {'form': form, 'image': image})
+        else:
+            # Retorna a lista de imagens se nenhum ID for fornecido
+            images = ImageFile.objects.all()
+            return render(request, 'images.html', {'images': images})
 
-            # Obtém os dados do formulário
+    def patch(self, request, *args, **kwargs):
+        try:
+            put_data = QueryDict(request.body)
+
             image_id = put_data.get('id')
             description = put_data.get('description')
             tags = put_data.get('tags')
+            name = put_data.get('name')  # Novo campo para o nome da imagem
 
-            # Busca a imagem pelo ID
-            image = ImageFile.objects.get(id=image_id)
+            image = get_object_or_404(ImageFile, id=image_id)
 
-            # Atualiza os campos
             image.description = description
             image.tags = tags
+            image.name = name  # Atualiza o nome da imagem
             image.save()
 
-             # Adiciona a mensagem de sucesso
             messages.success(request, 'Imagem atualizada com sucesso!')
+
+            form = EditImageForm(instance=request.user)
 
             response = HttpResponse()
             response["HX-Redirect"] = '/images'
             return response
         except Exception as e:
             return HttpResponse(f"<span id='upload-form-alert-image' class='alert alert-error my-2'>Erro ao processar a imagem: {str(e)}</span>", status=500)
+
     def post(self, request):
         if request.FILES.get('file'):
             uploaded_file = request.FILES['file']

@@ -20,8 +20,30 @@ class EditProfileForm(UserChangeForm):
         model = CustomUser
         fields = ('username', 'name', 'profile_picture')
 
-# class MediaFileForm(forms.ModelForm):
-#     class Meta:
-#         model = MediaFile
-#         fields = ['file', 'media_type']
+class EditImageForm(UserChangeForm):
+    name = forms.CharField(max_length=255, required=False)
+    description = forms.CharField(max_length=255, required=False)
+    tags = forms.CharField(max_length=255, required=False)
 
+    class Meta:
+        model = CustomUser
+        fields = ('name', 'description', 'tags')
+
+class EditAudioForm(UserChangeForm):
+    name = forms.CharField(max_length=255, required=False)
+    description = forms.CharField(max_length=255, required=False)
+    tags = forms.CharField(max_length=255, required=False)
+    genre = forms.CharField(max_length=255)
+
+    class Meta:
+        model = CustomUser
+        fields = ('name', 'description', 'tags', 'genre')
+
+class EditVideoForm(UserChangeForm):
+    name = forms.CharField(max_length=255, required=False)
+    description = forms.CharField(max_length=255, required=False)
+    tags = forms.CharField(max_length=255, required=False)
+
+    class Meta:
+        model = CustomUser
+        fields = ('name', 'description', 'tags', 'genre')

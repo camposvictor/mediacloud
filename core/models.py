@@ -29,6 +29,7 @@ class MediaFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     description = models.TextField(blank=True, null=True)
     tags = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         abstract = True
