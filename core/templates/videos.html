@@ -31,7 +31,7 @@
             </a>
             <button title="Excluir"
               class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center"
-              onclick="deleteVideo('{{ video.id }}')">
+              onclick="openDeleteModal('{{ video.id }}', '{{ video.name }}')">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -82,6 +82,24 @@
   </div>
 </div>
 
+<div id="deleteModal" class=" fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
+  <div class="bg-white p-8 shadow-lg  rounded relative max-w-md mx-auto">
+    <span class="absolute top-2 right-2 btn btn-circle btn-ghost btn-sm" onclick="closeDeleteModal()"><svg
+        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg></span>
+    <div class="text-center">
+      <p id="deleteModalText" class="mb-8">Você tem certeza que deseja excluir este vídeo?</p>
+      <div class="flex space-x-2 justify-center">
+        <button class="btn" onclick="closeDeleteModal()">Cancelar</button>
+        <button id="deleteButton" hx-post='/delete-video' type="submit" class="btn btn-error">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   function openModalVideo(videoUrl, videoName, videoSize, videoDate, videoMime, videoDuration, videoResolution, videoFrameRate, videoCodec, audioCodec, bitrate, genre, tags, description) {
     var videoElement = document.getElementById('modalVideo');
@@ -108,6 +126,17 @@
     document.getElementById('modalVideoDescription').textContent = 'Descrição: ' + description;
 
     document.getElementById('videoModal').classList.remove('hidden');
+  }
+
+  function openDeleteModal(videoId, videoName) {
+    htmx.find('#deleteButton').setAttribute('hx-post', '/delete-video/' + videoId);
+    htmx.process('#deleteButton');
+    document.getElementById('deleteModalText').textContent = `Você tem certeza que deseja excluir a video "${videoName}"?`;
+    document.getElementById('deleteModal').classList.remove('hidden');
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
   }
 
   function toggleVideoDetails() {
