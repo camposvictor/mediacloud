@@ -15,6 +15,20 @@ from django.utils.decorators import method_decorator
 from PIL import Image
 from io import BytesIO
 
+@login_required
+def edit_image_view(request, id):
+    if request.method == 'PATCH':
+        # troca por form de imagem;
+        form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Imagem atualizada com sucesso!')
+            return redirect('images')
+    else:
+        form = EditProfileForm(instance=request.user)
+
+    return render(request, 'edit/edit_image.html', {'form': form})
+
 @method_decorator(login_required, name='dispatch')
 class ImageView(View):
     def get(self, request):

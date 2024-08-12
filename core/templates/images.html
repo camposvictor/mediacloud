@@ -20,17 +20,14 @@
         <div class="flex-1 ml-4 flex items-center">
           <p class="mr-2 w-60 truncate">{{ image.file.name|slice:"6:" }}</p>
           <div class="ml-auto flex items-center">
-            <form action="/images" method="patch">
-              <input type="text" hidden name="id" value="{{image.id}}">
-              <button title="Editar"
-                class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15.25 4.75l3.5 3.5-8.5 8.5H7v-3.25L15.25 4.75zM19.25 5.25a1.5 1.5 0 1 1-2.121-2.121 1.5 1.5 0 0 1 2.121 2.121z" />
-                </svg>
-              </button>
-            </form>
+            <a href='/edit-image/{{image.id}}' title="Editar"
+              class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.25 4.75l3.5 3.5-8.5 8.5H7v-3.25L15.25 4.75zM19.25 5.25a1.5 1.5 0 1 1-2.121-2.121 1.5 1.5 0 0 1 2.121 2.121z" />
+              </svg>
+            </a>
             <button title="Excluir"
               class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center"
               onclick="deleteImage('{{ image.id }}')">
