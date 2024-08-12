@@ -23,9 +23,9 @@ def delete_audio_view(request, id):
         audio.delete()
         messages.success(request, f'Audio "{audio.name}" excluído com sucesso!')
         response = HttpResponse()
-        response["HX-Redirect"] = '/audio'
+        response["HX-Redirect"] = '/audios'
         return response
-    return redirect('audio')
+    return redirect('audios')
 
 @login_required
 def edit_audio_view(request, id):
