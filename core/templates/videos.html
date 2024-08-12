@@ -6,39 +6,46 @@
 {% block content %}
 <div class="flex-1">
   {% if videos %}
-    <ul class="list-none p-0 m-0">
-      {% for video in videos %}
-        <li class="flex items-center mb-2">
-          <div class="border border-gray-300 rounded-lg p-2 flex items-center w-full">
-            <div class="w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer relative"
-              onclick="openModalVideo('{{ video.file.url }}', '{{ video.get_file_name }}', '{{ video.file_size }}', '{{ video.uploaded_at }}', '{{ video.mime_type }}', '{{ video.duration }}', '{{ video.resolution }}', '{{ video.frame_rate }}', '{{ video.video_codec }}', '{{ video.audio_codec }}', '{{ video.bitrate }}', '{{ video.genre }}', '{{ video.tags }}', '{{ video.description }}')">
-              {% if video.thumbnail_file %}
-                <img src="{{ video.thumbnail_file.url }}" alt="Thumbnail do vídeo" class="object-cover w-full h-full">
-              {% else %}
-                <div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Sem Thumbnail</div>
-              {% endif %}
-            </div>
-            <div class="flex-1 ml-4 flex items-center">
-              <p class="mr-2 w-60 truncate">{{ video.file.name|slice:"6:" }}</p>
-              <div class="ml-auto flex items-center">
-                <button title="Editar" class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2" onclick="openEditModal('{{ video.id }}')">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.25 4.75l3.5 3.5-8.5 8.5H7v-3.25L15.25 4.75zM19.25 5.25a1.5 1.5 0 1 1-2.121-2.121 1.5 1.5 0 0 1 2.121 2.121z" />
-                  </svg>
-                </button>
-                <button title="Excluir" class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center" onclick="deleteVideo('{{ video.id }}')">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+  <ul class="list-none p-0 m-0">
+    {% for video in videos %}
+    <li class="flex items-center mb-2">
+      <div class="border border-gray-300 rounded-lg p-2 flex items-center w-full">
+        <div class="w-20 h-20 overflow-hidden flex-shrink-0 border border-gray-300 p-1 cursor-pointer relative"
+          onclick="openModalVideo('{{ video.file.url }}', '{{ video.get_file_name }}', '{{ video.file_size }}', '{{ video.uploaded_at }}', '{{ video.mime_type }}', '{{ video.duration }}', '{{ video.resolution }}', '{{ video.frame_rate }}', '{{ video.video_codec }}', '{{ video.audio_codec }}', '{{ video.bitrate }}', '{{ video.genre }}', '{{ video.tags }}', '{{ video.description }}')">
+          {% if video.thumbnail_file %}
+          <img src="{{ video.thumbnail_file.url }}" alt="Thumbnail do vídeo" class="object-cover w-full h-full">
+          {% else %}
+          <div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">Sem Thumbnail</div>
+          {% endif %}
+        </div>
+        <div class="flex-1 ml-4 flex items-center">
+          <p class="mr-2 w-60 truncate">{{ video.file.name|slice:"6:" }}</p>
+          <div class="ml-auto flex items-center">
+            <a href='/edit-video/{{video.id}}' title="Editar"
+              class="bg-blue-500 text-white p-1 rounded hover:bg-blue-700 flex items-center justify-center mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.25 4.75l3.5 3.5-8.5 8.5H7v-3.25L15.25 4.75zM19.25 5.25a1.5 1.5 0 1 1-2.121-2.121 1.5 1.5 0 0 1 2.121 2.121z" />
+              </svg>
+            </a>
+            <button title="Excluir"
+              class="bg-red-500 text-white p-1 rounded hover:bg-red-700 flex items-center justify-center"
+              onclick="deleteVideo('{{ video.id }}')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+              </svg>
+            </button>
           </div>
-        </li>
-      {% endfor %}
-    </ul>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
   {% else %}
-    <p>Não há vídeos</p>
+  <p>Não há vídeos</p>
   {% endif %}
 </div>
 
@@ -53,7 +60,8 @@
       </video>
       <div class="text-center mt-4">
         <p id="modalVideoName" class="font-bold"></p>
-        <button id="showVideoDetailsButton" class="text-blue-500 mt-2" onclick="toggleVideoDetails()">Mostrar Detalhes</button>
+        <button id="showVideoDetailsButton" class="text-blue-500 mt-2" onclick="toggleVideoDetails()">Mostrar
+          Detalhes</button>
         <div id="modalVideoDetails" class="hidden mt-4 text-center">
           <p id="modalVideoSize"></p>
           <p id="modalVideoDate"></p>
