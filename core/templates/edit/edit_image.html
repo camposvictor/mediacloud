@@ -1,0 +1,60 @@
+<!-- mediacloud/templates/mediacloud/edit_profile.html -->
+{% extends "base/app_base.html" %}
+
+{% block title %}Editar Imagem{% endblock %}
+{% block heading %}Editar Imagem{% endblock %}
+
+
+{% block content %}
+<div class="w-full md:max-w-md mx-auto flex flex-col">
+  <form method="patch" class="space-y-4" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div role="alert" class="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ form.noin_feld_errors }}</span>
+    </div>
+    {% endif %}
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Nome</span>
+      </div>
+      <input type="text" name="name" class="input input-bordered w-full"
+        value="{{ form.name.value|default_if_none:'' }}">
+      {% for error in form.name.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Tags</span>
+      </div>
+      <input type="text" name="tags" class="input input-bordered w-full"
+        value="{{ form.tags.value|default_if_none:'' }}">
+      {% for error in form.tags.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Description</span>
+      </div>
+      <input type="text" name="description" class="input input-bordered w-full"
+        value="{{ form.description.value|default_if_none:'' }}">
+      {% for error in form.description.errors %}
+      <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
+      {% endfor %}
+    </label>
+
+    <div class="!mt-6 flex justify-end w-full space-x-2">
+      <a href="{% url 'images' %}" class="btn btn-ghost">Cancelar</a>
+      <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
