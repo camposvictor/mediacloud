@@ -17,6 +17,17 @@ from io import BytesIO
 from core.forms import EditImageForm
 
 @login_required
+def delete_image(request, id):
+    if request.method == 'POST':
+        image = get_object_or_404(ImageFile, id=id)
+        image.delete()
+        messages.success(request, f'Imagem "{image.get_file_name}" excluída com sucesso!')
+        response = HttpResponse()
+        response["HX-Redirect"] = '/'
+        return response
+    return redirect('images') 
+
+@login_required
 def edit_image_view(request, id):
     image = get_object_or_404(ImageFile, id=id)
     if request.method == 'POST':
