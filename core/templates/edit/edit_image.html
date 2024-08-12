@@ -4,7 +4,6 @@
 {% block title %}Editar Imagem{% endblock %}
 {% block heading %}Editar Imagem{% endblock %}
 
-
 {% block content %}
 <div class="w-full md:max-w-md mx-auto flex flex-col">
   <form method="post" class="space-y-4" enctype="multipart/form-data">
@@ -15,7 +14,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <span>{{ form.noin_feld_errors }}</span>
+      <span>{{ form.non_field_errors }}</span>
     </div>
     {% endif %}
     <label class="form-control w-full">
@@ -41,10 +40,10 @@
 
     <label class="form-control w-full">
       <div class="label">
-        <span class="label-text">Description</span>
+        <span class="label-text">Descrição</span>
       </div>
-      <input type="text" name="description" class="input input-bordered w-full"
-        value="{{ form.description.value|default_if_none:'' }}">
+      <textarea type="text" name="description" class="textarea textarea-bordered w-full"
+        value="{{ form.description.value|default_if_none:'' }}"></textarea>
       {% for error in form.description.errors %}
       <div class="label label-text-alt text-xs text-red-500">{{ error }}</div>
       {% endfor %}
